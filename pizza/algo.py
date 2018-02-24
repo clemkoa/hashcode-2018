@@ -1,15 +1,20 @@
 import os
 import numpy as np
 
-data_directory = 'data'
-files = ['small.in', 'example.in', 'medium.in', 'big.in']
-output_directory = 'output'
+# ------------------------- Command line arguments -----------------------------
+algo_flags = [
+  ('v', 'vertical', 'Thin slices computed column-wise'),
+]
 
-def solve_pizza(rows_number,
-                columns_number,
-                min_ingredient_number,
-                max_total_ingredient_number,
-                data):
+algo_args = [
+  ('d', 'divide', 10, 'Divide pizza into smaller squares')
+]
+
+# ----------------------------- Strategies -------------------------------------
+def default(data, **args):
+    rows_number, columns_number, min_ingredient_number, max_total_ingredient_number, data = data
+    data = np.array(data)
+
     shape = (1, max_total_ingredient_number)
     (x, y) = data.shape
     results = []
@@ -22,6 +27,7 @@ def solve_pizza(rows_number,
             if (is_slice_okay(xmin, xmax, ymin, ymax, data, min_ingredient_number, max_total_ingredient_number)):
                 data = update_slice(xmin, xmax, ymin, ymax, data)
                 results.append([xmin, ymin, xmax - 1, ymax - 1])
+
     return results
 
 def is_slice_okay(xmin, xmax, ymin, ymax, data,
@@ -44,32 +50,3 @@ def is_slice_okay(xmin, xmax, ymin, ymax, data,
 def update_slice(xmin, xmax, ymin, ymax, data):
     data[xmin:xmax, ymin:ymax] = 2.0
     return data
-
-def write_results(results, filename):
-    text_file = open(os.path.join(output_directory, filename), "w")
-    tot = len(results)
-    text_file.write(str(tot) + '\n')
-    for r in results:
-        text_file.write(' '.join([str(s) for s in r]) + '\n')
-    text_file.close()
-
-
-for filename in files:
-    f = open(os.path.join(data_directory, filename), 'r+')
-
-    meta_parameters = f.readline().strip().split(' ')
-    rows_number = int(meta_parameters[0])
-    columns_number = int(meta_parameters[1])
-    min_ingredient_number = int(meta_parameters[2])
-    max_total_ingredient_number = int(meta_parameters[3])
-
-
-    array = []
-    for line in f.readlines():
-        a = [0 if e is 'T' else 1 for e in line.strip()]
-        array.append(a)
-    n = np.array(array)
-    print('Solving...', filename)
-
-    results = solve_pizza(rows_number, columns_number, min_ingredient_number, max_total_ingredient_number, n)
-    write_results(results, filename + '.txt')
