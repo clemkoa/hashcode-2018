@@ -1,23 +1,64 @@
+import localsolver
+
 import numpy as np
 
 from pulp import LpInteger, LpMaximize, LpProblem, LpStatus, LpVariable, value
 
+from utils import cache
+
 # ------------------------- Command line arguments -----------------------------
 solver_flags = [
-  ('l', 'load', 'Load initial position from algo')
+  ('l', 'load', 'Load initial position from algo'),
+  ('m', 'memoize', 'Store computed data for a faster next run'),
+  ('r', 'recompute', 'Recompute memoized data')
 ]
 
 solver_args = [
+  ('t', 'time', 10, 'Time to let LocalSolver run')
 ]
 
 # ----------------------------- Preprocess -------------------------------------
-def preprocess(data, **args):
+def preprocess(data, memoize, recompute, **args):
   R, C, L, H, tomatoes = data
   patterns = compute_patterns(L, H)
-  slices, areas, overlap = compute_slices(R, C, L, tomatoes, patterns)
+
+  inputs = (R, C, L, tomatoes, patterns)
+  fn = cache if memoize else lambda f, arguments, r: f(arguments)
+  slices, areas, overlap = fn(get_slices, inputs, recompute, (R, C))
+
   return R, C, slices, areas, overlap
 
 # ----------------------------- Strategies -------------------------------------
+def local(data, load, time, **args):
+  R, C, slices, areas, overlap = preprocess(data, **args)
+
+  with localsolver.LocalSolver() as ls:
+    model = ls.model
+
+    print('Variables')
+    # Decision variables
+    x = [model.bool() for i in range(len(slices))]
+
+    print('Constraints')
+    # Constraints
+    for i in range(R):
+      if i % 50 == 0: print(i)
+      for j in range(C):
+        model.constraint(model.sum(x[s] for s in overlap[i][j]) <= 1)
+
+    # Objective
+    print('Objective')
+    model.maximize(model.sum(s * area for s, area in zip(x, areas)))
+
+    model.close()
+
+    ls.create_phase().time_limit = int(time)
+    ls.solve()
+
+    solution = [coords for s, coords in enumerate(slices) if x[s].value == 1]
+
+    return solution
+
 def pulp(data, load, **args):
   R, C, slices, areas, overlap = preprocess(data, **args)
 
@@ -50,11 +91,12 @@ def compute_patterns(L, H):
   p += [(h, w) for w, h in p if w != h]
   return p
 
-def compute_slices(R, C, L, tomatoes, patterns):
+def get_slices(R, C, L, tomatoes, patterns):
   tomatoes = np.array(tomatoes)
   overlap = [[[] for j in range(C)] for i in range(R)]
   slices, areas = [], []
   for i in range(R):
+    if i % 50 == 0: print(i)
     for j in range(C):
       for w, h in patterns:
         if i + h < R and j + w < C:

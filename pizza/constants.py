@@ -9,4 +9,6 @@ output_algo_folder = join(output_folder, 'algo')
 output_solver_folder = join(output_folder, 'solver')
 output_extension = '.dat'
 
+cache_folder = 'cache'
+
 file_names = [f.split('.')[0] for f in listdir(input_folder)]
