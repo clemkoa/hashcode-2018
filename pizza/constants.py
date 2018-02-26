@@ -5,8 +5,8 @@ input_folder = 'input'
 input_extension = '.in'
 
 output_folder = 'output'
-output_algo_folder = join(output_folder, 'algo')
-output_solver_folder = join(output_folder, 'solver')
+output_run_folder   = join(output_folder, 'run')
+output_solve_folder = join(output_folder, 'solve')
 output_extension = '.dat'
 
 cache_folder = 'cache'

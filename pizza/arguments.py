@@ -1,14 +1,33 @@
 from argparse import ArgumentParser
 from sys      import argv
 
-from algo   import algo_flags, algo_args
-from solver import solver_flags, solver_args
-from utils import error
+from utils  import error
 
-def check_flags_and_args():
-  use_solver = '-s' in argv or '--use-solver' in argv
-  flags = solver_flags if use_solver else algo_flags
-  args  = solver_args  if use_solver else algo_args
+# -------------------- Command line arguments for run.py -----------------------
+run_flags = [
+  ('v', 'vertical', 'Thin slices computed column-wise'),
+]
+
+run_args = [
+  ('d', 'divide', 10, 'Divide pizza into smaller squares')
+]
+
+# ------------------- Command line arguments for solve.py ----------------------
+solve_flags = [
+  ('l', 'load', 'Load initial position from algo'),
+  ('r', 'recompute', 'Recompute memoized data'),
+  ('d', 'display', 'Display model construction progression'),
+  ('c', 'callback', 'Set display callback')
+]
+
+solve_args = [
+  ('t', 'time', 10, 'Time to let LocalSolver run')
+]
+
+# ------------------------------- Parsing --------------------------------------
+def check_flags_and_args(use_solver):
+  flags = solve_flags if use_solver else run_flags
+  args  = solve_args  if use_solver else run_args
 
   short_versions = [arg[0] for arg in flags + args] + ['s']
   long_versions = [arg[1] for arg in flags + args] + ['use-solver']
@@ -27,15 +46,12 @@ def check_flags_and_args():
 
   return flags, args
 
-def parse_args():
+def parse_args(use_solver):
   parser = ArgumentParser()
 
   parser.add_argument('file_name', help='Input file name (no extension)')
-  parser.add_argument('strategy', help='Main algorithm strategy')
-  parser.add_argument('-s', '--use-solver', action='store_true',
-                      help='Run using solver')
 
-  flags, args = check_flags_and_args()
+  flags, args = check_flags_and_args(use_solver)
   for short, long_version, help_str in flags:
     parser.add_argument('-' + short, '--' + long_version, action='store_true',
                         help=help_str)
