@@ -1,17 +1,24 @@
 import os
+
 import numpy as np
 
-# ------------------------- Command line arguments -----------------------------
-algo_flags = [
-  ('v', 'vertical', 'Thin slices computed column-wise'),
-]
+from functools import partial
+from os.path   import join
 
-algo_args = [
-  ('d', 'divide', 10, 'Divide pizza into smaller squares')
-]
+from arguments import parse_args
+from constants import file_names, output_extension, output_run_folder
+from data      import evaluate, read, write as write_data
+from utils     import cache as cache_data
 
-# ----------------------------- Strategies -------------------------------------
-def default(data, **args):
+cache = partial(cache_data, False)
+def write(solution):
+    name = file_name + '_' + str(evaluate(solution)) + output_extension
+    path = join(output_run_folder, name)
+    write_data(path, solution)
+
+# ---------------------------- Main function -----------------------------------
+def run(**args):
+    data = read(file_name)
     rows_number, columns_number, min_ingredient_number, max_total_ingredient_number, data = data
     data = np.array(data)
 
@@ -28,7 +35,7 @@ def default(data, **args):
                 data = update_slice(xmin, xmax, ymin, ymax, data)
                 results.append([xmin, ymin, xmax - 1, ymax - 1])
 
-    return results
+    write(results)
 
 def is_slice_okay(xmin, xmax, ymin, ymax, data,
                 min_ingredient_number,
@@ -50,3 +57,13 @@ def is_slice_okay(xmin, xmax, ymin, ymax, data,
 def update_slice(xmin, xmax, ymin, ymax, data):
     data[xmin:xmax, ymin:ymax] = 2.0
     return data
+
+if __name__ == '__main__':
+    parsed_args = parse_args(False)
+    file_name = parsed_args.pop('file_name')
+
+    if file_name == 'all':
+        for file_name in file_names:
+            run(**parsed_args)
+    else:
+        run(**parsed_args)

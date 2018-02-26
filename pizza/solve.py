@@ -8,10 +8,9 @@ from os.path   import join
 from arguments import parse_args
 from constants import file_names, input_extension, input_folder
 from constants import output_solve_folder
-from data      import evaluate, read as read_data, write as write_data
+from data      import evaluate, read, write as write_data
 from utils     import cache as cache_data
 
-read = lambda f: read_data(join(input_folder, f + input_extension))
 cache = partial(cache_data, True)
 
 def write(solution):

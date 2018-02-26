@@ -1,9 +1,12 @@
 from os      import mkdir
-from os.path import exists, dirname
+from os.path import dirname, exists, join
+
+from constants import input_extension, input_folder
 
 # ------------------------------ Parsing ---------------------------------------
 # Parse input data file
-def read(path):
+def read(file_name):
+  path = join(input_folder, file_name + input_extension)
   with open(path, 'r') as f:
     R, C, L, H = map(int, next(f).split())
     tomatoes = [[1 if c == 'T' else 0 for c in line.strip()] for line in f]
