@@ -5,17 +5,15 @@ from utils  import error
 
 # -------------------- Command line arguments for run.py -----------------------
 run_flags = [
-  ('v', 'vertical', 'Thin slices computed column-wise'),
+  ('f', 'flag', 'Test flag description')
 ]
 
 run_args = [
-  ('d', 'divide', 10, 'Divide pizza into smaller squares')
+  ('a', 'argument', 'default', 'Test argument description')
 ]
 
 # ------------------- Command line arguments for solve.py ----------------------
 solve_flags = [
-  ('r', 'recompute', 'Recompute memoized data'),
-  ('d', 'display', 'Display model construction progression'),
   ('c', 'callback', 'Set display callback')
 ]
 

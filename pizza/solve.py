@@ -7,14 +7,15 @@ from os.path   import join
 
 from arguments import parse_args
 from constants import file_names, input_extension, input_folder
-from constants import output_solve_folder
-from data      import evaluate, read, write as write_data
+from constants import output_extension, output_solve_folder
+from data      import evaluate, load as load_data, read, write as write_data
 from utils     import cache as cache_data
 
+# -------------------------------- Data ----------------------------------------
 cache = partial(cache_data, True)
 
 def write(solution):
-  name = file_name + '_' + str(evaluate(solution))
+  name = file_name + '_' + str(evaluate(solution)) + output_extension
   path = join(output_solve_folder, name)
   write_data(path, solution)
 
@@ -59,20 +60,31 @@ def get_slices(R, C, L, tomatoes, patterns, display):
 # ---------------------------- Main function -----------------------------------
 def main(**args):
   data = read(file_name)
-  solve(data, **args)
+  solution = solve(data, **args)
+  write(solution)
 
 def solve(data, recompute, display, load, callback, time, **args):
   R, C, slices, areas, overlap = preprocess(data, recompute, display)
 
   with localsolver.LocalSolver() as ls:
     model = ls.model
-    x = declare_variables(model, slices)
-    define_constraints(model, x, R, C, overlap, display)
-    set_objective(model, x, areas)
+
+    # Variables
+    x = [model.bool() for i in range(len(slices))]
+
+    # Constraints
+    for i in range(R):
+      if display and i % 50 == 0: print(str(i) + '/' + str(R))
+      for j in range(C):
+        model.constraint(model.sum(x[s] for s in overlap[i][j]) <= 1)
+
+    # Objective
+    model.maximize(model.sum(s * area for s, area in zip(x, areas)))
+
     model.close()
 
-    if load: load_initial_position(load, slices, x)
     if callback: set_callback(ls, slices, x)
+    if load: load_initial_position(load, slices, x)
 
     ls.create_phase().time_limit = int(time)
 
@@ -80,27 +92,23 @@ def solve(data, recompute, display, load, callback, time, **args):
 
     solution = retrieve_solution(slices, x)
 
-    write(solution)
+    return solution
 
-def declare_variables(model, slices):
-  x = [model.bool() for i in range(len(slices))]
-  return x
+# -------------------------------- Load ----------------------------------------
+def load_initial_position(name, slices, x):
+  path = join(output_solve_folder, file_name + '_' + name + output_extension)
+  solution = set(load_data(path))
 
-def define_constraints(model, x, R, C, overlap, display):
-  for i in range(R):
-    if display and i % 50 == 0: print(str(i) + '/' + str(R))
-    for j in range(C):
-      model.constraint(model.sum(x[s] for s in overlap[i][j]) <= 1)
+  def keep_slice(s):
+    return all([min(c % 250, 250 - (c % 250)) >= 8 for c in s])
 
-def set_objective(model, x, areas):
-  model.maximize(model.sum(s * area for s, area in zip(x, areas)))
+  start = [1 if s in solution and keep_slice(s) else 0 for s in slices]
 
-def load_initial_position(load, slices, x):
-  load = set(load)
-  start = [1 if s in load else 0 for s in slices]
   for s, v in zip(x, start):
-    s.value = v
+    if v == 1:
+      s.value = 1
 
+# -------------------------------- Utils ---------------------------------------
 def set_callback(ls, slices, x):
   def cb(ls, code):
     solution = retrieve_solution(slices, x)
@@ -112,6 +120,7 @@ def retrieve_solution(slices, x):
   solution = [coords for s, coords in enumerate(slices) if x[s].value == 1]
   return solution
 
+# ------------------------------ Arguments -------------------------------------
 if __name__ == '__main__':
   parsed_args = parse_args(True)
   file_name = parsed_args.pop('file_name')
