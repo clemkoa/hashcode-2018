@@ -1,5 +1,6 @@
 import numpy as np
 
+from copy      import deepcopy
 from functools import partial
 from os        import walk
 from os.path   import join
@@ -12,8 +13,8 @@ from utils     import cache as cache_data
 from utils     import *
 
 cache = partial(cache_data, False)
-def write(solution):
-    name = file_name + '_' + str(evaluate(solution)) + output_extension
+def write(data, solution):
+    name = file_name + '_' + str(evaluate(data, solution)) + output_extension
     path = join(output_run_folder, name)
     write_data(path, solution)
 
@@ -31,7 +32,8 @@ def zip_code():
 
 # ---------------------------- Main functions ----------------------------------
 def run(**args):
-    R, C, F, N, B, T, _rides = read(file_name)
+    data = read(file_name)
+    (R, C, F, N, B, T, _rides) = deepcopy(data)
     print('number of rows', R)
     print('number of columns', C)
     print('number of vehicles', F)
@@ -72,7 +74,7 @@ def run(**args):
                     break
 
     print(solution[0])
-    write(solution)
+    write(data, solution)
     zip_code()
 
 # --------------------------- Argument parsing ---------------------------------

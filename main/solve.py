@@ -11,8 +11,8 @@ from utils     import cache as cache_data
 # -------------------------------- Data ----------------------------------------
 cache = partial(cache_data, True)
 
-def write(solution):
-  name = file_name + '_' + str(evaluate(solution)) + output_extension
+def write(data, olution):
+  name = file_name + '_' + str(evaluate(data, solution)) + output_extension
   path = join(output_solve_folder, name)
   write_data(path, solution)
 
@@ -23,8 +23,8 @@ def preprocess(data):
 # ---------------------------- Main function -----------------------------------
 def main(**args):
   data = read(file_name)
-  solution = solve(data, **args)
-  # write([[0], [1, 3, 5]])
+  # solution = solve(data, **args)
+  # write(data, [[0], [1, 3, 5]])
 
 def solve(data, load, callback, time, **args):
   # data = preprocess(data)

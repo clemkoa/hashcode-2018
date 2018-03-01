@@ -2,6 +2,7 @@ from os      import mkdir
 from os.path import dirname, exists, join
 
 from constants import input_extension, input_folder
+from utils     import time_for_ride
 
 # ------------------------------ Parsing ---------------------------------------
 # Parse input data file
@@ -38,6 +39,43 @@ def load(path):
 
 # ----------------------------- Evaluation -------------------------------------
 # Score solution to avoid stomping our best solutions
-def evaluate(solution):
-  print('!!! Evaluation not implemented, returning score of 0 !!!')
-  return 0
+
+def score_driver(data, driver):
+    (R, C, F, N, B, T, rides) = data
+
+    driver_time = 0
+    driver_pos = (0,0)
+    driver_score = 0
+    for user in driver:
+        start_pos, end_pos, start_T, end_T = rides[user]
+        driver_time += time_for_ride(driver_pos[0], driver_pos[1], start_pos[0], start_pos[1])
+
+        #is the driver time below start_T
+        if (driver_time < start_T):
+            driver_time = start_T
+
+        #The driver has arrived, we start the ride
+        bonus = B if (driver_time==start_T) else 0
+        timeTravel = time_for_ride(start_pos[0], start_pos[1], end_pos[0], end_pos[1])
+
+        #we update the score
+        if ((driver_time+timeTravel)<end_T):
+            driver_score += timeTravel + bonus
+
+        #we update the time and the pos
+        driver_time += timeTravel
+        driver_pos = end_pos
+
+    return driver_score
+
+def evaluate(data, solution):
+    # Check that no ride is done twice
+    all_rides_done = [item for sublist in solution for item in sublist]
+    if len(all_rides_done) != len(set(all_rides_done)):
+        raise ValueError('One or more rides are done by several cars')
+
+    score = 0
+    for car in solution:
+      score += score_driver(data, car)
+    print('Score: {}'.format(score))
+    return score
