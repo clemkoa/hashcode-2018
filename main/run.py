@@ -80,22 +80,36 @@ def run(**args):
             ))
         for car in np.where(free_cars <= time_step)[0]:
             time_to_go_to_rides = np.sum(np.abs(ride_start_pos - positions[car]), 1)
-            rides_worth_it = time_to_go_to_rides + time_step < ride_latest_start_times
+            rides_worth_it = (time_to_go_to_rides + time_step) < ride_latest_start_times
             valid_rides = np.logical_and(rides_worth_it, rides_todo)
+            time_to_go_to_rides_with_validity = time_to_go_to_rides + 10000000 * np.logical_not(valid_rides)
 
-            for index_ride in np.where(valid_rides)[0]:
-                # First is already valid
-                ((a, b), (x, y), s, f) = rides[index_ride]
+            # Select closest valid ride
+            index_ride = np.argmin(time_to_go_to_rides_with_validity)
 
-                # Add this ride to this car
-                rides_todo[index_ride] = False
-                solution[car].append(index_ride)
-                # Update car's position and next available time
-                positions[car] = (x, y)
-                free_cars[car] = f
+            # Check for valid selection
+            if not valid_rides[index_ride]:
                 break
+            ((a, b), (x, y), s, f) = rides[index_ride]
 
-    print(solution[0])
+            # Add this ride to this car
+            rides_todo[index_ride] = False
+            solution[car].append(index_ride)
+            # Update car's position and next available time
+
+            positions[car] = (x, y)
+            free_cars[car] = time_step + time_to_go_to_rides[index_ride] + ride_times[index_ride]
+
+    print('Final: time step: {}, rides taken: {}, rides still possible: {}, cars in rides: {}'.format(
+        time_step,
+        len(rides) - np.sum(rides_todo),
+        np.sum(ride_latest_start_times >= time_step),
+        np.sum(free_cars > time_step)
+    ))
+    print('Rides missed: {}'.format(
+        np.sum(rides_todo)
+    ))
+
     write(data, solution)
     zip_code()
 
