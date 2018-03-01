@@ -48,24 +48,26 @@ def score_driver(data, driver):
     driver_pos = (0,0)
     driver_score = 0
     for user in driver:
-        start_pos, end_pos, start_T, end_T = rides[user]
-        driver_time += time_for_ride(driver_pos[0], driver_pos[1], start_pos[0], start_pos[1])
+        got_bonus = False
+        ride_start_pos, ride_end_pos, ride_start_time, ride_end_time = rides[user]
 
-        #is the driver time below start_T
-        if (driver_time < start_T):
-            driver_time = start_T
+        # Go to the ride
+        driver_time += time_for_ride(driver_pos[0], driver_pos[1], ride_start_pos[0], ride_start_pos[1])
 
-        #The driver has arrived, we start the ride
-        bonus = B if (driver_time==start_T) else 0
-        timeTravel = time_for_ride(start_pos[0], start_pos[1], end_pos[0], end_pos[1])
+        # If we arrive early, get a bonus and wait
+        if driver_time <= ride_start_time:
+            driver_time = ride_start_time
+            got_bonus = True
 
-        #we update the score
-        if ((driver_time+timeTravel)<end_T):
-            driver_score += timeTravel + bonus
-
-        #we update the time and the pos
-        driver_time += timeTravel
-        driver_pos = end_pos
+        # Do the ride
+        ride_time = time_for_ride(ride_start_pos[0], ride_start_pos[1], ride_end_pos[0], ride_end_pos[1])
+        driver_time += ride_time
+        driver_pos = ride_end_pos
+        # If we finish in time,
+        if driver_time <= ride_end_time:
+            driver_score += ride_time
+            if got_bonus:
+                driver_score += B
 
     return driver_score
 
