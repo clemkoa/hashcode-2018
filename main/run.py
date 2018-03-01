@@ -31,7 +31,7 @@ def zip_code():
 
 # ---------------------------- Main functions ----------------------------------
 def run(**args):
-    R, C, F, N, B, T, rides = read(file_name)
+    R, C, F, N, B, T, _rides = read(file_name)
     print('number of rows', R)
     print('number of columns', C)
     print('number of vehicles', F)
@@ -47,6 +47,7 @@ def run(**args):
     positions = [(0,0) for p in cars]
     print(cars)
     print(positions)
+    rides = _rides
 
     print()
     print()
@@ -66,7 +67,6 @@ def run(**args):
                 if (is_ride_valid_from_position(positions[car][0], positions[car][1], time_step, a, b, x, y, s, f)):
                     taken_rides.append(index_ride)
                     solution[car].append(index_ride)
-                    del rides[index_ride]
                     positions[car] = (x,y)
                     free_cars[car] = f
                     break
