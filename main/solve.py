@@ -96,7 +96,7 @@ def dist(start, end):
 
 def build_compatible(demand):
   def check(first, second):
-    return second - first[2] + dist(first, second)
+    return second[2] - first[2] + dist(first[1], second[0])
   compatible = [[check(first, second) for second in demand] for first in demand]
   return compatible
 
