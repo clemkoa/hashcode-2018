@@ -4,3 +4,4 @@ main/cache
 *.pyc
 code.zip
 output
+*.zip
