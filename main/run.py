@@ -22,9 +22,10 @@ def zip_code():
         # ziph is zipfile handle
         for root, dirs, files in walk(path):
             for file in files:
-                zip_output.write(join(root, file))
+                if file.endswith('.py') or file.endswith('.in') or file.endswith('.dat'):
+                    zip_output.write(join(root, file))
 
-    zip_output = ZipFile('../code.zip', 'w', ZIP_DEFLATED)
+    zip_output = ZipFile('output/run/code.zip', 'w', ZIP_DEFLATED)
     zipdir('../main', zip_output)
     zip_output.close()
 
