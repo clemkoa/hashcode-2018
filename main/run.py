@@ -96,8 +96,8 @@ def run(**args):
             # Add this ride to this car
             rides_todo[index_ride] = False
             solution[car].append(index_ride)
-            # Update car's position and next available time
 
+            # Update car's position and next available time
             positions[car] = (x, y)
             free_cars[car] = time_step + time_to_go_to_rides[index_ride] + ride_times[index_ride]
 
