@@ -43,7 +43,8 @@ def solve(data, load, callback, time, **args):
     # Expressions
     lates = [model.array(model.range(0, N), lambda i, prev, a=4, b=6, c=3, car=car: model.max(0, prev + \
       (model.at(times, 0, car[0] + 1) if i == 0 else \
-      model.at(times, car[i-1] + 1, car[i] + 1)))) for car in cars]
+      model.at(times, car[i-1] + 1, \
+      car[i] + 1)))) for car in cars]
 
     # Constraints
     model.constraint(model.disjoint(cars))
