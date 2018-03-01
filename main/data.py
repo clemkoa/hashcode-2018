@@ -28,13 +28,13 @@ def write(path, solution):
   with open(path, 'w') as f:
     for car in solution:
       f.write(str(len(car)) + ' ' + ' '.join(map(str, car)) + '\n')
-    raise NotImplementedError
 
 # Load solution from file for solver to use
 def load(path):
   print('Loading solution from ' + path)
   with open(path, 'r') as f:
-    raise NotImplementedError
+    solution = [list(map(int, line.split()))[1:] for line in f]
+    return solution
 
 # ----------------------------- Evaluation -------------------------------------
 # Score solution to avoid stomping our best solutions
