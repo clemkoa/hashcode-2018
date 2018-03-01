@@ -26,6 +26,8 @@ def write(path, solution):
     mkdir(folder)
 
   with open(path, 'w') as f:
+    for car in solution:
+      f.write(str(len(car)) + ' ' + ' '.join(map(str, car)) + '\n')
     raise NotImplementedError
 
 # Load solution from file for solver to use

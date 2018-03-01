@@ -24,8 +24,7 @@ def preprocess(data):
 def main(**args):
   data = read(file_name)
   # solution = solve(data, **args)
-  # write(solution)
-  print(data)
+  write([[0], [1, 3, 5]])
 
 def solve(data, load, callback, time, **args):
   data = preprocess(data)
