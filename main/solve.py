@@ -46,6 +46,7 @@ def solve(data, load, callback, time, **args):
       def f(i, prev, car=car):
         print('OK')
         print(car)
+        print(dir(car))
         print('OK')
         return model.max(0, prev + \
           (model.at(\
