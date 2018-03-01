@@ -54,18 +54,20 @@ def run(**args):
     print()
     print()
     print()
-    free_cars = [0 for car in cars]
+    free_cars = np.array([0 for car in cars])
+    rides_end_time = np.array([r[-1] for r in rides])
     taken_rides = [False for r in rides]
     for time_step in range(T):
         if time_step % 500 == 0:
-            print('time step', time_step)
-        for car in cars:
-            if free_cars[car] > time_step:
-                continue
-            for index_ride, ride in enumerate(rides):
-                if taken_rides[index_ride]:
-                    continue
-                ((a, b), (x, y), s, f) = ride
+            print('time step: {}, rides taken: {}, rides still possible: {}, cars in rides: {}'.format(
+                time_step,
+                np.sum(taken_rides),
+                np.sum(rides_end_time >= time_step),
+                np.sum(free_cars > time_step)
+            ))
+        for car in np.where(free_cars <= time_step)[0]:
+            for index_ride in np.where(np.logical_and(rides_end_time >= time_step, np.logical_not(taken_rides)))[0]:
+                ((a, b), (x, y), s, f) = rides[index_ride]
                 if (is_ride_valid_from_position(positions[car][0], positions[car][1], time_step, a, b, x, y, s, f)):
                     taken_rides[index_ride] = True
                     solution[car].append(index_ride)
