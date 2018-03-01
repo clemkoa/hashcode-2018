@@ -48,7 +48,8 @@ def solve(data, load, callback, time, **args):
     # Constraints
     model.constraint(model.disjoint(cars))
     for late, car in zip(lates, cars):
-      c = [model.constraint(i >= model.count(car) or late[i] <= model.at(max_lates, car[i])) for i in range(N)]
+      for i in range(N):
+        model.constraint(i >= model.count(car))
 
     # Objective
     model.maximize(model.sum([model.count(car) for car in cars]))
@@ -79,7 +80,7 @@ def solve(data, load, callback, time, **args):
       print(late.value)
     print(max_lates.value)
     print(build_times([((0, 0), (0, 0), 0, 0)] + demand))
-    print(c)
+
 
 
     # solution = retrieve_solution(cars, lates, N)
