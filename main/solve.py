@@ -29,39 +29,31 @@ def main(**args):
 def solve(data, load, callback, time, **args):
   # data = preprocess(data)
   R, C, F, N, B, T, demand = data
-  compatible = build_compatible([((0, 0), (0, 0), 0, 0)] + demand)
-  print(compatible)
-
-  assert False
-
-  starts = []
 
   with localsolver.LocalSolver() as ls:
     model = ls.model
 
-    # # Data
-    # starts = [start for start, _, _, _ in demand]
-    # ends = [end for _, end, _, _ in demand]
-    # startX = model.array([x for _, x in starts])
-    # startY = model.array([y for y, _ in starts])
-    # startT = model.array([t for _, _, t, _ in demand])
-    # endX = model.array([x for _, x in ends])
-    # endY = model.array([y for y, _ in ends])
-    # endT = model.array([t for _, _, _, t in demand])
+    # Data
+    times = model.array(build_times([((0, 0), (0, 0), 0, 0)] + demand))
+    max_lates = model.array([e - s for _, _, s, e in demand])
 
-    # # Variables
-    # car = [model.list(N) for i in range(F)]
+    # Variables
+    cars = [model.list(N) for i in range(F)]
 
-    # # Constraints
-    # model.partition(cars)
-    # is_valid = model.function(lambda position, i: position + )
-    # for car in cars:
+    # Expressions
+    fns = [model.function(lambda i, prev: prev + \
+      model.at(times, 0, car[0] + 1) if i == 0 else \
+      model.at(times, car[i] + 1, car[i+1] + 1)) for car in cars]
+    lates = [model.array(model.range(0, N), fn) for fn, car in zip(fns, cars)]
 
-
-    # model.constraint(model.sum(x[s] for s in overlap[i][j]) <= 1)
+    # Constraints
+    model.disjoint(cars)
+    for car, late in zip(cars, lates):
+      for i in range(N):
+        model.constraint(model.at(late, car[i]) <= model.at(max_lates, car[i]))
 
     # Objective
-    # model.maximize(model.sum(s * area for s, area in zip(x, areas)))
+    model.maximize(model.sum([model.count(car) for car in cars])
 
     model.close()
 
@@ -87,19 +79,21 @@ def set_callback(ls):
 
   ls.add_callback(localsolver.LSCallbackType.DISPLAY, cb)
 
-def retrieve_solution():
-  raise NotImplementedError
+def retrieve_solution(cars):
+  for car in cars:
+    print(car.value)
+  return []
 
 def dist(start, end):
   (ys, xs), (ye, xe) = start, end
   return abs(ys - ye) + abs(xs - xe)
 
-def build_compatible(demand):
+def build_times(demand):
   def check(first, second):
-    earliest = first[2] + dist(first[0], first[1]) + dist(first[1], second[0])
-    return second[3] - earliest
-  compatible = [[check(first, second) for second in demand] for first in demand]
-  return compatible
+    ride = dist(first[0], first[1]) + dist(first[1], second[0])
+    return first[2] + ride - second[2]
+  times = [[check(first, second) for second in demand] for first in demand]
+  return times
 
 # --------------------------- Argument parsing ---------------------------------
 if __name__ == '__main__':
