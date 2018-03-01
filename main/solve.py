@@ -48,7 +48,7 @@ def solve(data, load, callback, time, **args):
     model.constraint(model.disjoint(cars))
     for k, car in enumerate(cars):
       for i in range(N):
-        model.constraint(i >= model.count(car) or (lates[k][i] <= model.at(max_lates, car[i])))
+        model.constraint(i >= model.count(car) or (lates[k,i] <= model.at(max_lates, car[i])))
 
     # Objective
     model.maximize(model.sum([model.count(car) for car in cars]))
