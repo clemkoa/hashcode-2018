@@ -29,7 +29,7 @@ def time_for_ride(row_start_position, column_start_position, row_end_position, c
   return math.fabs(row_start_position - row_end_position) + math.fabs(column_start_position - column_end_position)
 
 def is_ride_valid_from_position(row_car_position, column_car_position, time_now, a, b, x, y, s, f):
-    if (time_for_ride(row_car_position, column_car_position, a, b) + time_for_ride(a, b, x, y) < f - time_now) and time_for_ride(a, b, x, y) <= f - s:
+    if (time_for_ride(row_car_position, column_car_position, a, b) + time_for_ride(a, b, x, y) <= f - time_now) and time_for_ride(a, b, x, y) <= f - s:
         return True
     else:
         return False
