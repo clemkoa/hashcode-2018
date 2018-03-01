@@ -55,8 +55,9 @@ def solve(data, load, callback, time, **args):
 
     model.close()
 
-    cars[0].clear()
-    cars[0].add(0)
+    l = cars[0].get_value()
+    l.clear()
+    l.add(0)
 
 
     if callback: set_callback(ls)
