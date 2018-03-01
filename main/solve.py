@@ -23,7 +23,7 @@ def preprocess(data):
 # ---------------------------- Main function -----------------------------------
 def main(**args):
   data = read(file_name)
-  # solution = solve(data, **args)
+  solution = solve(data, **args)
   # write(data, [[0], [1, 3, 5]])
 
 def solve(data, load, callback, time, **args):
