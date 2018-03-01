@@ -29,7 +29,7 @@ def main(**args):
 def solve(data, load, callback, time, **args):
   # data = preprocess(data)
   R, C, F, N, B, T, demand = data
-  compatible = build_compatible([(0, 0), (0, 0), 0, 0] + demand)
+  compatible = build_compatible([((0, 0), (0, 0), 0, 0)] + demand)
   print(compatible)
 
   assert False
