@@ -41,7 +41,7 @@ def solve(data, load, callback, time, **args):
     cars = [model.list(N) for i in range(F)]
 
     # Expressions
-    lates = [model.array(model.range(0, N), model.function(lambda i, prev, car=car: model.max(0, \
+    lates = [model.array(model.range(0, N), model.create_function(lambda i, prev, car=car: model.max(0, \
       prev + \
       (model.at(times, 0, \
       car[0] + 1) \
