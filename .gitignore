@@ -1,3 +1,4 @@
 pizza/cache
 main/cache
 .DS_Store
+*.pyc
