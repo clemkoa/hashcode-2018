@@ -41,7 +41,7 @@ def solve(data, load, callback, time, **args):
     cars = [model.list(N) for i in range(F)]
 
     # Expressions
-    fns = [model.function(lambda i, prev: prev + (model.at(times, 0, car[0] + 1) if i == 0 else model.at(times, car[i] + 1, car[i+1] + 1))) for car in cars]
+    fns = [model.function(lambda i, prev: model.max(0, model.max(0, prev) + (model.at(times, 0, car[0] + 1) if i == 0 else model.at(times, car[i-1] + 1, car[i] + 1)))) for car in cars]
     lates = [model.array(model.range(0, N), fn) for fn, car in zip(fns, cars)]
 
     # Constraints
@@ -55,8 +55,15 @@ def solve(data, load, callback, time, **args):
 
     model.close()
 
-    cars[0].clear()
-    cars[0].add(0)
+    l = cars[0].get_value()
+    l.clear()
+    l.add(0)
+
+
+    a = cars[1].get_value()
+    a.clear()
+    a.add(1)
+    a.add(2)
 
 
     if callback: set_callback(ls)
@@ -72,6 +79,7 @@ def solve(data, load, callback, time, **args):
     for late in lates:
       print(late.value)
     print(max_lates.value)
+    print(build_times([((0, 0), (0, 0), 0, 0)] + demand))
 
     # solution = retrieve_solution(cars, lates, N)
 
