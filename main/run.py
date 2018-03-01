@@ -55,7 +55,7 @@ def run(**args):
     print()
     print()
     free_cars = [0 for car in cars]
-    taken_rides = []
+    taken_rides = [False for r in rides]
     for time_step in range(T):
         if time_step % 500 == 0:
             print('time step', time_step)
@@ -63,11 +63,11 @@ def run(**args):
             if free_cars[car] > time_step:
                 continue
             for index_ride, ride in enumerate(rides):
-                if index_ride in taken_rides:
+                if taken_rides[index_ride]:
                     continue
                 ((a, b), (x, y), s, f) = ride
                 if (is_ride_valid_from_position(positions[car][0], positions[car][1], time_step, a, b, x, y, s, f)):
-                    taken_rides.append(index_ride)
+                    taken_rides[index_ride] = True
                     solution[car].append(index_ride)
                     positions[car] = (x,y)
                     free_cars[car] = f
