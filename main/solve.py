@@ -41,13 +41,9 @@ def solve(data, load, callback, time, **args):
     cars = [model.list(N) for i in range(F)]
 
     # Expressions
-    def f(k, prev):
-      fn = model.function(lambda i, prev: model.max(0, prev + \
-        (model.at(times, 0, cars[k][0] + 1) if i == 0 else \
-        model.at(times, cars[k][i-1] + 1, cars[k][i] + 1))))
-      return model.array(model.range(0, N), fn)
-    lates = model.array(model.range(0, F), model.function(f))
-
+    lates = [model.array(model.range(0, N), lambda i, prev, car=car: model.max(0, prev + \
+      (model.at(times, 0, cars[k][0] + 1) if i == 0 else \
+      model.at(times, car[i-1] + 1, car[i] + 1)))) for car in cars]
 
     # Constraints
     model.constraint(model.disjoint(cars))
