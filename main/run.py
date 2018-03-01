@@ -91,8 +91,8 @@ def run(**args):
                 rides_todo[index_ride] = False
                 solution[car].append(index_ride)
                 # Update car's position and next available time
+                free_cars[car] = math.fabs(positions[car][0] - x) + math.fabs(positions[car][1] - y) + time_step
                 positions[car] = (x, y)
-                free_cars[car] = f
                 break
 
     print(solution[0])
