@@ -53,7 +53,7 @@ def solve(data, load, callback, time, **args):
         model.constraint(model.at(late, car[i]) <= model.at(max_lates, car[i]))
 
     # Objective
-    model.maximize(model.sum([model.count(car) for car in cars])
+    model.maximize(model.sum([model.count(car) for car in cars]))
 
     model.close()
 
