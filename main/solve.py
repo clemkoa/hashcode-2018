@@ -47,7 +47,7 @@ def solve(data, load, callback, time, **args):
 
     # Constraints
     model.constraint(model.disjoint(cars))
-    for late, car in zip(lates, cars)):
+    for late, car in zip(lates, cars):
       c = [model.constraint(i >= model.count(car) or late[i] <= model.at(max_lates, car[i])) for i in range(N)]
 
     # Objective
