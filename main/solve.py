@@ -60,6 +60,12 @@ def solve(data, load, callback, time, **args):
     l.add(0)
 
 
+    a = cars[1].get_value()
+    a.clear()
+    a.add(1)
+    a.add(2)
+
+
     if callback: set_callback(ls)
     if load: load_initial_position(load)
 
