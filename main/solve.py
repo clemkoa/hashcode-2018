@@ -46,7 +46,7 @@ def solve(data, load, callback, time, **args):
     lates = [model.array(model.range(0, N), model.function(make_lambda(k))) for k in range(F)]
 
     # Constraints
-    # model.constraint(model.disjoint(cars))
+    model.constraint(model.disjoint(*cars))
     for late, car in zip(lates, cars):
       for i in range(N):
         model.constraint(late[i] <= model.at(max_lates, car[i]))
