@@ -39,23 +39,23 @@ def solve(data, load, callback, time, **args):
   with localsolver.LocalSolver() as ls:
     model = ls.model
 
-    # Data
-    starts = [start for start, _, _, _ in demand]
-    ends = [end for _, end, _, _ in demand]
-    startX = model.array([x for _, x in starts])
-    startY = model.array([y for y, _ in starts])
-    startT = model.array([t for _, _, t, _ in demand])
-    endX = model.array([x for _, x in ends])
-    endY = model.array([y for y, _ in ends])
-    endT = model.array([t for _, _, _, t in demand])
+    # # Data
+    # starts = [start for start, _, _, _ in demand]
+    # ends = [end for _, end, _, _ in demand]
+    # startX = model.array([x for _, x in starts])
+    # startY = model.array([y for y, _ in starts])
+    # startT = model.array([t for _, _, t, _ in demand])
+    # endX = model.array([x for _, x in ends])
+    # endY = model.array([y for y, _ in ends])
+    # endT = model.array([t for _, _, _, t in demand])
 
-    # Variables
-    car = [model.list(N) for i in range(F)]
+    # # Variables
+    # car = [model.list(N) for i in range(F)]
 
-    # Constraints
-    model.partition(cars)
-    is_valid = model.function(lambda position, i: position + )
-    for car in cars:
+    # # Constraints
+    # model.partition(cars)
+    # is_valid = model.function(lambda position, i: position + )
+    # for car in cars:
 
 
     # model.constraint(model.sum(x[s] for s in overlap[i][j]) <= 1)
