@@ -7,6 +7,7 @@ from arguments import parse_args
 from constants import file_names, output_extension, output_run_folder
 from data      import evaluate, read, write as write_data
 from utils     import cache as cache_data
+from utils     import *
 
 cache = partial(cache_data, False)
 def write(solution):
@@ -16,8 +17,47 @@ def write(solution):
 
 # ---------------------------- Main functions ----------------------------------
 def run(**args):
-    data = read(file_name)
-    solution = data
+    R, C, F, N, B, T, rides = read(file_name)
+    print('number of rows', R)
+    print('number of columns', C)
+    print('number of vehicles', F)
+    print('number of rides', N)
+    print('bonus', B)
+    print('number of time steps', T)
+    # for ride in rides:
+    #     print('ride', ride)
+    #     ((a, b), (x, y), s, f) = ride
+
+    cars = range(F)
+    solution = [[] for car in cars]
+    positions = [(0,0) for p in cars]
+    print(cars)
+    print(positions)
+
+    print()
+    print()
+    print()
+    free_cars = [0 for car in cars]
+    taken_rides = []
+    for time_step in range(T):
+        print('time step', time_step)
+        for car in cars:
+            if free_cars[car] > time_step:
+                continue
+            for index_ride, ride in enumerate(rides):
+                if index_ride in taken_rides:
+                    continue
+                ((a, b), (x, y), s, f) = ride
+                if (is_ride_valid_from_position(positions[car][0], positions[car][1], time_step, a, b, x, y, s, f)):
+                    print('valid', positions, index_ride)
+                    taken_rides.append(index_ride)
+                    solution[car].append(index_ride)
+                    del rides[index_ride]
+                    positions[car] = (x,y)
+                    free_cars[car] = f
+                    break
+
+    print(solution[0])
     write(solution)
 
 # --------------------------- Argument parsing ---------------------------------
