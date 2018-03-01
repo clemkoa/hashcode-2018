@@ -35,7 +35,6 @@ def solve(data, load, callback, time, **args):
 
     # Data
     times = model.array(build_times([((0, 0), (0, 0), 0, 0)] + demand))
-    print([e - s for _, _, s, e in demand])
     max_lates = model.array([e - s for _, _, s, e in demand])
 
     # Variables
@@ -64,7 +63,14 @@ def solve(data, load, callback, time, **args):
     print('OK')
     ls.solve()
 
-    solution = retrieve_solution(cars, lates, N)
+    for car in cars:
+      print(car.value)
+    for late in lates:
+      print(late.value)
+    for max_late in max_lates:
+      print(max_late.value)
+
+    # solution = retrieve_solution(cars, lates, N)
 
     print(ls.compute_inconsistency())
 
