@@ -49,7 +49,7 @@ def solve(data, load, callback, time, **args):
     model.constraint(model.disjoint(*cars))
     for late, car in zip(lates, cars):
       for i in range(N):
-        model.constraint(model.count(car) < i + 1 or late[i] <= model.at(max_lates, car[i]))
+        model.constraint(model.count(car) <= model.create_constant(i) or late[i] <= model.at(max_lates, car[i]))
 
     # Objective
     model.maximize(model.sum([model.count(car) for car in cars]))
@@ -87,7 +87,7 @@ def solve(data, load, callback, time, **args):
 
     print(ls.compute_inconsistency())
 
-    return solution
+    return []
 
 # -------------------------------- Load ----------------------------------------
 def load_initial_position(name):
