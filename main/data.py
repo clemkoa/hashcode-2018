@@ -83,6 +83,5 @@ def evaluate(data, solution):
     score = 0
     for car_id, car in enumerate(solution):
       score += score_driver(data, car, car_id)
-    print(len(solution))
     print('Score: {}'.format(score))
     return score
