@@ -44,7 +44,7 @@ def solve(data, load, callback, time, **args):
     def f(k, prev):
       fn = model.function(lambda i, prev: model.max(0, prev + (model.at(times, 0, cars[k][0] + 1) if i == 0 else model.at(times, cars[k][i-1] + 1, cars[k][i] + 1))))
       return model.array(model.range(0, N), fn)
-    lates = model.array(model.range(0, F), model.function(lambda k, prev: f))
+    lates = model.array(model.range(0, F), model.function(f))
 
 
     # Constraints
