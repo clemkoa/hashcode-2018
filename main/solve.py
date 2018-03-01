@@ -48,7 +48,8 @@ def solve(data, load, callback, time, **args):
           (model.at(\
           times, \
           0, \
-          car[0] + 1) if i == 0 else \
+          car[0] \
+          + 1) if i == 0 else \
           model.at(\
           times, \
           car[i-1] + 1, \
