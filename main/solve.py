@@ -43,8 +43,8 @@ def solve(data, load, callback, time, **args):
     # Expressions
     def make_lambda(k):
       return lambda i, prev: model.max(0, prev + \
-        (model.at(times, 0, model.at(cars, k, 0) + 1) if i == 0 else \
-        model.at(times, model.at(cars, k, i-1) + 1, model.at(cars, k, i) + 1)))
+        (model.at(times, 0, cars[k][0] + 1) if i == 0 else \
+        model.at(times, cars[k][i-1] + 1, cars[k][i] + 1)))
     lates = [model.array(model.range(0, N), model.function(make_lambda(k))) for k in range(F)]
 
     # Constraints
