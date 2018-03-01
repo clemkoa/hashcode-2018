@@ -3,3 +3,4 @@ main/cache
 .DS_Store
 *.pyc
 output
+*.zip
