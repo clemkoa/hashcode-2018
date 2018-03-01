@@ -67,6 +67,8 @@ def solve(data, load, callback, time, **args):
 
     solution = retrieve_solution(cars)
 
+    print(ls.computeInconsistency())
+
     return solution
 
 # -------------------------------- Load ----------------------------------------
