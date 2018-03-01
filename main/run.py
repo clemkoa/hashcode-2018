@@ -83,7 +83,7 @@ def run(**args):
             rides_worth_it = (time_to_go_to_rides + time_step) <= ride_latest_start_times
             rides_with_bonus = (time_to_go_to_rides + time_step) <= ride_start_times
             valid_rides = np.logical_and(rides_worth_it, rides_todo)
-            time_to_go_to_rides_with_validity = time_to_go_to_rides + 10000000 * np.logical_not(valid_rides)
+            time_to_go_to_rides_with_validity = time_to_go_to_rides - B * rides_with_bonus - np.sum(np.abs(ride_end_pos - ride_start_pos), 1) + 10000000 * np.logical_not(valid_rides)
 
             # Select closest valid ride
             index_ride = np.argmin(time_to_go_to_rides_with_validity)
