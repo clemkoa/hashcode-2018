@@ -38,10 +38,12 @@ def solve(data, load, callback, time, **args):
     max_lates = model.array([e - s for _, _, s, e in demand])
 
     # Variables
-    cars = model.array([model.list(N) for i in range(F)])
+    cars = [model.list(N) for i in range(F)]
 
     # Expressions
     def make_lambda(k):
+      print(type(k))
+      print(k)
       return lambda i, prev: model.max(0, prev + \
         (model.at(times, 0, model.at(cars, k, 0) + 1) if i == 0 else \
         model.at(times, model.at(cars, k, i-1) + 1, model.at(cars, k, i) + 1)))
