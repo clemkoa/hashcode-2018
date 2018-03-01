@@ -42,8 +42,7 @@ def solve(data, load, callback, time, **args):
 
     # Expressions
     def make_lambda(k):
-      return lambda i, prev: (i == 0) * 1
-      # return (lambda i, prev: ((prev + (model.at(times, 0, cars[k][0] + 1) if i == 0 else model.at(times, cars[k][i-1] + 1, cars[k][i] + 1))) if i == 0 else prev))
+      return lambda i, prev: prev + model.iif(i == 0, model.at(times, 0, cars[k][0] + 1), model.at(times, cars[k][i-1] + 1, cars[k][i] + 1))
     lates = [model.array(model.range(0, N), model.function(make_lambda(k))) for k in range(F)]
 
     # Constraints
