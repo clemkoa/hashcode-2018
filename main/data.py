@@ -33,7 +33,8 @@ def write(path, solution):
 def load(path):
   print('Loading solution from ' + path)
   with open(path, 'r') as f:
-    raise NotImplementedError
+    solution = [list(map(int, line.split()))[1:] for line in f]
+    return solution
 
 # ----------------------------- Evaluation -------------------------------------
 # Score solution to avoid stomping our best solutions
