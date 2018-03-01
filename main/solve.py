@@ -23,8 +23,9 @@ def preprocess(data):
 # ---------------------------- Main function -----------------------------------
 def main(**args):
   data = read(file_name)
-  solution = solve(data, **args)
-  write(solution)
+  # solution = solve(data, **args)
+  # write(solution)
+  print(data)
 
 def solve(data, load, callback, time, **args):
   data = preprocess(data)

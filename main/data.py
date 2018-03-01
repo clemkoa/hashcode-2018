@@ -8,7 +8,15 @@ from constants import input_extension, input_folder
 def read(file_name):
   path = join(input_folder, file_name + input_extension)
   with open(path, 'r') as f:
-    raise NotImplementedError
+    R, C, F, N, B, T = map(int, next(f).split())
+
+    def parse_line(line):
+      sy, sx, fy, fx, s, f = map(int, line.split())
+      return (sy, sx), (fy, fx), s, f
+
+    demand = [parse_line(line) for line in f]
+
+    return R, C, F, N, B, T, demand
 
 # ----------------------------- Persistance ------------------------------------
 # Write solution to disk in a submission-ready format
