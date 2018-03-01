@@ -44,7 +44,9 @@ def solve(data, load, callback, time, **args):
     lates = []
     for car in cars:
       def f(i, prev, car=car):
+        print('OK')
         print(car)
+        print('OK')
         return model.max(0, prev + \
           (model.at(\
           times, \
