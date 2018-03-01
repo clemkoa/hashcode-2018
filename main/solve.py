@@ -23,19 +23,41 @@ def preprocess(data):
 # ---------------------------- Main function -----------------------------------
 def main(**args):
   data = read(file_name)
-  # solution = solve(data, **args)
-  write([[0], [1, 3, 5]])
+  solution = solve(data, **args)
+  # write([[0], [1, 3, 5]])
 
 def solve(data, load, callback, time, **args):
-  data = preprocess(data)
+  # data = preprocess(data)
+  R, C, F, N, B, T, demand = data
+  compatible = build_compatible(demand)
+  print(compatible)
+
+  assert False
+
+  starts = []
 
   with localsolver.LocalSolver() as ls:
     model = ls.model
 
+    # Data
+    starts = [start for start, _, _, _ in demand]
+    ends = [end for _, end, _, _ in demand]
+    startX = model.array([x for _, x in starts])
+    startY = model.array([y for y, _ in starts])
+    startT = model.array([t for _, _, t, _ in demand])
+    endX = model.array([x for _, x in ends])
+    endY = model.array([y for y, _ in ends])
+    endT = model.array([t for _, _, _, t in demand])
+
     # Variables
-    # x = [model.bool() for i in range(len(slices))]
+    car = [model.list(N) for i in range(F)]
 
     # Constraints
+    model.partition(cars)
+    is_valid = model.function(lambda position, i: position + )
+    for car in cars:
+
+
     # model.constraint(model.sum(x[s] for s in overlap[i][j]) <= 1)
 
     # Objective
@@ -67,6 +89,16 @@ def set_callback(ls):
 
 def retrieve_solution():
   raise NotImplementedError
+
+def dist(start, end):
+  (ys, xs), (ye, xe) = start, end
+  return abs(ys - ye) + abs(xs - xe)
+
+def build_compatible(demand):
+  def check(first, second):
+    return second - first[2] + dist(first, second)
+  compatible = [[check(first, second) for second in demand] for first in demand]
+  return compatible
 
 # --------------------------- Argument parsing ---------------------------------
 if __name__ == '__main__':
