@@ -44,7 +44,15 @@ def solve(data, load, callback, time, **args):
     lates = []
     for car in cars:
       def f(i, prev, car=car):
-        return model.max(0, prev + (model.at(times, 0, car[0] + 1) if i == 0 else model.at(times, car[i-1] + 1, car[i] + 1)))
+        return model.max(0, prev + \
+          (model.at(\
+          times, \
+          0, \
+          car[0] + 1) if i == 0 else \
+          model.at(\
+          times, \
+          car[i-1] + 1, \
+          car[i] + 1)))
       lates.append(model.array(model.range(0, N), model.function(f)))
 
     # Constraints
