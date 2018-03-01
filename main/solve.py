@@ -35,6 +35,7 @@ def solve(data, load, callback, time, **args):
 
     # Data
     times = model.array(build_times([((0, 0), (0, 0), 0, 0)] + demand))
+    print([e - s for _, _, s, e in demand])
     max_lates = model.array([e - s for _, _, s, e in demand])
 
     # Variables
@@ -65,7 +66,7 @@ def solve(data, load, callback, time, **args):
     print('OK')
     ls.solve()
 
-    solution = retrieve_solution(cars)
+    solution = retrieve_solution(cars, lates, N)
 
     print(ls.compute_inconsistency())
 
@@ -82,9 +83,12 @@ def set_callback(ls):
 
   ls.add_callback(localsolver.LSCallbackType.DISPLAY, cb)
 
-def retrieve_solution(cars):
+def retrieve_solution(cars, lates, N):
   for car in cars:
     print(car.value)
+  for late in lates:
+    print(late.value)
+
   return []
 
 def dist(start, end):
