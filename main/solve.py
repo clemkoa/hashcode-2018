@@ -29,7 +29,7 @@ def main(**args):
 def solve(data, load, callback, time, **args):
   # data = preprocess(data)
   R, C, F, N, B, T, demand = data
-  compatible = build_compatible(demand)
+  compatible = build_compatible([((0, 0), (0, 0), 0, 0)] + demand)
   print(compatible)
 
   assert False
@@ -96,7 +96,8 @@ def dist(start, end):
 
 def build_compatible(demand):
   def check(first, second):
-    return second[2] - first[2] + dist(first[1], second[0])
+    earliest = first[2] + dist(first[0], first[1]) + dist(first[1], second[0])
+    return second[3] - earliest
   compatible = [[check(first, second) for second in demand] for first in demand]
   return compatible
 
