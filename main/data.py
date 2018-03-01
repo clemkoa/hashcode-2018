@@ -41,7 +41,7 @@ def load(path):
 # ----------------------------- Evaluation -------------------------------------
 # Score solution to avoid stomping our best solutions
 
-def score_driver(data, driver):
+def score_driver(data, driver, driver_id):
     (R, C, F, N, B, T, rides) = data
 
     driver_time = 0
@@ -52,7 +52,10 @@ def score_driver(data, driver):
         ride_start_pos, ride_end_pos, ride_start_time, ride_end_time = rides[user]
 
         # Go to the ride
-        driver_time += time_for_ride(driver_pos[0], driver_pos[1], ride_start_pos[0], ride_start_pos[1])
+        start_go = driver_time
+        go_time = time_for_ride(driver_pos[0], driver_pos[1], ride_start_pos[0], ride_start_pos[1])
+        driver_time += go_time
+        start_ride = driver_time
 
         # If we arrive early, get a bonus and wait
         if driver_time <= ride_start_time:
@@ -78,7 +81,8 @@ def evaluate(data, solution):
         raise ValueError('One or more rides are done by several cars')
 
     score = 0
-    for car in solution:
-      score += score_driver(data, car)
+    for car_id, car in enumerate(solution):
+      score += score_driver(data, car, car_id)
+    print(len(solution))
     print('Score: {}'.format(score))
     return score
