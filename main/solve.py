@@ -67,7 +67,7 @@ def solve(data, load, callback, time, **args):
 
     solution = retrieve_solution(cars)
 
-    print(ls.computeInconsistency())
+    print(model.computeInconsistency())
 
     return solution
 
