@@ -35,28 +35,29 @@ def solve(data, load, callback, time, **args):
 
     # Data
     times = model.array(build_times([((0, 0), (0, 0), 0, 0)] + demand))
-    print([e - s for _, _, s, e in demand])
     max_lates = model.array([e - s for _, _, s, e in demand])
 
     # Variables
     cars = [model.list(N) for i in range(F)]
 
     # Expressions
-    fns = [model.function(lambda i, prev: prev + \
-      model.at(times, 0, car[0] + 1) if i == 0 else \
-      model.at(times, car[i] + 1, car[i+1] + 1)) for car in cars]
+    fns = [model.function(lambda i, prev: prev + (model.at(times, 0, car[0] + 1) if i == 0 else model.at(times, car[i] + 1, car[i+1] + 1))) for car in cars]
     lates = [model.array(model.range(0, N), fn) for fn, car in zip(fns, cars)]
 
     # Constraints
     model.constraint(model.disjoint(cars))
     for car, late in zip(cars, lates):
       for i in range(N):
-        model.constraint(model.at(late, car[i]) <= model.at(max_lates, car[i]))
+        model.constraint(i >= model.count(car) or (late[i] <= model.at(max_lates, car[i])))
 
     # Objective
     model.maximize(model.sum([model.count(car) for car in cars]))
 
     model.close()
+
+    cars[0].clear()
+    cars[0].add(0)
+
 
     if callback: set_callback(ls)
     if load: load_initial_position(load)
@@ -66,7 +67,13 @@ def solve(data, load, callback, time, **args):
     print('OK')
     ls.solve()
 
-    solution = retrieve_solution(cars, lates, N)
+    for car in cars:
+      print(car.value)
+    for late in lates:
+      print(late.value)
+    print(max_lates.value)
+
+    # solution = retrieve_solution(cars, lates, N)
 
     print(ls.compute_inconsistency())
 

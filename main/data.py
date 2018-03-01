@@ -28,7 +28,8 @@ def write(path, solution):
 
   with open(path, 'w') as f:
     for car in solution:
-      f.write(str(len(car)) + ' ' + ' '.join(map(str, car)) + '\n')
+      if car:
+        f.write(str(len(car)) + ' ' + ' '.join(map(str, car)) + '\n')
 
 # Load solution from file for solver to use
 def load(path):
