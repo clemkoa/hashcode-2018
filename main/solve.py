@@ -79,6 +79,7 @@ def solve(data, load, callback, time, **args):
     for late in lates:
       print(late.value)
     print(max_lates.value)
+    print(times)
 
     # solution = retrieve_solution(cars, lates, N)
 
