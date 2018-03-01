@@ -62,9 +62,10 @@ def solve(data, load, callback, time, **args):
 
     ls.create_phase().time_limit = int(time)
 
+    print('OK')
     ls.solve()
 
-    solution = retrieve_solution()
+    solution = retrieve_solution(cars)
 
     return solution
 
